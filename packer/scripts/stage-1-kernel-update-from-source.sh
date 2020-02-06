@@ -5,9 +5,10 @@ curl https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.101.tar.xz -O
 tar xf linux-4.19.101.tar.xz
 cd linux-4.19.101/
 #Пакеты нужные для сборки
+sudo yum update -y
 sudo yum install rpm-build gcc bison flex bc elfutils-libelf-devel openssl-devel -y
 #Копируем конфиг
-sudo cp /boot/config-3.10.0-957.12.2.el7.x86_64 .config
+sudo cp /boot/config-3.10.0-1062.9.1.el7.x86_64 .config
 #Адаптируем
 yes "" | make oldconfig
 #Собираем пакеты
