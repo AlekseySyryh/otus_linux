@@ -42,8 +42,8 @@ last_line=`cat $access_log | wc -l`
 
 sed -n "$first_line,$last_line p" $access_log > $unprocessed_log_file
 
-first_time=`head -n 1 access.log | sed -E 's/^.*\[(.+?)\].*/\1/'`
-last_time=`tail -n 1 access.log | sed -E 's/^.*\[(.+?)\].*/\1/'`
+first_time=`head -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
+last_time=`tail -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
 
 
 echo Статистика за период с $first_time по $last_time > $mail_file
