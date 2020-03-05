@@ -18,7 +18,7 @@ fi
 get_first_line() {
 	if [ -f $last_run ]; then
     		local last_run_time=`cat $last_run`
-		local first_line=`cat -n $access_log | grep "$last_run_time" | cut -f 1`;
+		local first_line=`cat -n $access_log | grep "$last_run_time" | tail -n 1| cut -f 1`;
 	else
 		local first_line=0
 	fi
@@ -34,13 +34,14 @@ while [ -f $lock_file ]; do
     echo "Идет фоновый процесс - ждем 10 секунд"
     sleep 10
 done
+
 trap 'rm -f "$lock_file";rm -f "$unprocessed_log_file";rm -f "$mail_file"; exit $?' INT TERM EXIT
 touch $lock_file
 
 first_line=$(get_first_line)
 last_line=`cat $access_log | wc -l`
 
-if [[ $first_line -lt $last_line ]]; then
+if [[ $first_line -le $last_line ]]; then
     sed -n "$first_line,$last_line p" $access_log > $unprocessed_log_file
 
     first_time=`head -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
