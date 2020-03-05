@@ -40,35 +40,36 @@ touch $lock_file
 first_line=$(get_first_line)
 last_line=`cat $access_log | wc -l`
 
-sed -n "$first_line,$last_line p" $access_log > $unprocessed_log_file
+if [[ $first_line -lt $last_line ]]; then
+    sed -n "$first_line,$last_line p" $access_log > $unprocessed_log_file
 
-first_time=`head -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
-last_time=`tail -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
+    first_time=`head -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
+    last_time=`tail -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
 
+    echo Статистика за период с $first_time по $last_time > $mail_file
+    echo " " >> $mail_file
+    echo 1. $x IP адресов с наибольшим кол-вом запросов >> $mail_file
+    echo " " >> $mail_file
+    cat $unprocessed_log_file | sed -E "s/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).+$/\1/" | sort | uniq -c | sort -rn | head -n $x | awk '{print "IP Адрес " $2 " сделал " $1 " запросов"}' >> $mail_file
+    echo " " >> $mail_file
+    echo 2. $y запрашиваемых адресов с наибольшим кол-вом запросов >> $mail_file
+    echo " " >> $mail_file
+    cat $unprocessed_log_file | grep -E "GET|POST|HEAD" | sed -E 's/^.+(GET|POST|HEAD) ([^ ]+).+$/\2/' | sort | uniq -c | sort -rn | head -n $y | awk '{print "Адрес " $2 " запрошен " $1 " раз"}' >> $mail_file
+    echo " " >> $mail_file
+    echo 3. Ошибки >> $mail_file
+    echo " " >> $mail_file
+    cat $unprocessed_log_file | grep -E '^.+".+" [45]' | sed -E 's/^.+\[([^ ]+).+\] (".+") ([0-9]{3}).+$/\1 ошибка \3 при запросе \2/' >> $mail_file
+    echo " " >> $mail_file
+    echo 4. Коды возврата >> $mail_file
+    echo " " >> $mail_file
+    cat $unprocessed_log_file | sed -E 's/^.+".*" ([0-9]{3}).+$/\1/' | sort | uniq -c | sort -rn | awk '{print "Код " $2 " встретился " $1 " раз"}' >> $mail_file
 
-echo Статистика за период с $first_time по $last_time > $mail_file
-echo " " >> $mail_file
-echo 1. $x IP адресов с наибольшим кол-вом запросов >> $mail_file
-echo " " >> $mail_file
-cat $unprocessed_log_file | sed -E "s/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).+$/\1/" | sort | uniq -c | sort -rn | head -n $x | awk '{print "IP Адрес " $2 " сделал " $1 " запросов"}' >> $mail_file
-echo " " >> $mail_file
-echo 2. $y запрашиваемых адресов с наибольшим кол-вом запросов >> $mail_file
-echo " " >> $mail_file
-cat $unprocessed_log_file | grep -E "GET|POST|HEAD" | sed -E 's/^.+(GET|POST|HEAD) ([^ ]+).+$/\2/' | sort | uniq -c | sort -rn | head -n $y | awk '{print "Адрес " $2 " запрошен " $1 " раз"}' >> $mail_file
-echo " " >> $mail_file
-echo 3. Ошибки >> $mail_file
-echo " " >> $mail_file
-cat $unprocessed_log_file | grep -E '^.+".+" [45]' | sed -E 's/^.+\[([^ ]+).+\] (".+") ([0-9]{3}).+$/\1 ошибка \3 при запросе \2/' >> $mail_file
-echo " " >> $mail_file
-echo 4. Коды возврата >> $mail_file
-echo " " >> $mail_file
-cat $unprocessed_log_file | sed -E 's/^.+".*" ([0-9]{3}).+$/\1/' | sort | uniq -c | sort -rn | awk '{print "Код " $2 " встретился " $1 " раз"}' >> $mail_file
+    mail -s "Статистика" $email < $mail_file
+    echo $last_time > $last_run
+fi
 
-mail -s "Статистика" $email < $mail_file
-echo $last_time > $last_run
 rm -f "$lock_file"
 rm -f "$unprocessed_log_file"
 rm -f "$mail_file"
-
 
 trap - INT TERM EXIT
