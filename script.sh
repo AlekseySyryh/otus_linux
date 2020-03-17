@@ -15,19 +15,29 @@ if [[ $# -ne 3 ]]; then
 	exit -1
 fi
 
+first_line=-1
 get_first_line() {
 	if [ -f $last_run ]; then
+		echo "Найден файл с временем последнего запуска"
     		local last_run_time=`cat $last_run`
-		local first_line=`cat -n $access_log | grep "$last_run_time" | tail -n 1| cut -f 1`;
+		if [[ -z "$last_run_time" ]]; then
+			echo "Время не корректное"
+			first_line=-1
+		else
+			echo "Время последнего запуска $last_run_time"
+			first_line=`cat -n $access_log | grep "$last_run_time" | tail -n 1| cut -f 1`;
+		fi
 	else
-		local first_line=0
+		echo "Время последнего запуска не найдено"
+		first_line=-1
 	fi
-	if [[ -z $first_line ]]; then
-    		local first_line=0;
+	if [[ $first_line -eq -1 ]]; then
+		echo "Время не найдено в $access_log. Будем читать сначала."
+    		first_line=1;
 	else
-    		local first_line=$((first_line + 1))
+		echo "Время найдено в $access_log на $((first_line + 0)) строке"
+    		first_line=$((first_line + 1))
 	fi;
-	echo $first_line
 }
 
 while [ -f $lock_file ]; do
@@ -38,10 +48,11 @@ done
 trap 'rm -f "$lock_file";rm -f "$unprocessed_log_file";rm -f "$mail_file"; exit $?' INT TERM EXIT
 touch $lock_file
 
-first_line=$(get_first_line)
+get_first_line
 last_line=`cat $access_log | wc -l`
 
 if [[ $first_line -le $last_line ]]; then
+    echo "Читаем $access_log со строки $first_line по $last_line"
     sed -n "$first_line,$last_line p" $access_log > $unprocessed_log_file
 
     first_time=`head -n 1 $unprocessed_log_file | sed -E 's/^.*\[(.+?)\].*/\1/'`
@@ -65,8 +76,12 @@ if [[ $first_line -le $last_line ]]; then
     echo " " >> $mail_file
     cat $unprocessed_log_file | sed -E 's/^.+".*" ([0-9]{3}).+$/\1/' | sort | uniq -c | sort -rn | awk '{print "Код " $2 " встретился " $1 " раз"}' >> $mail_file
 
+    #echo "Посылаем письмо"
+    #cat $mail_file
     mail -s "Статистика" $email < $mail_file
     echo $last_time > $last_run
+else
+    echo "$access_log не содержит строк с прошлого запуска"
 fi
 
 rm -f "$lock_file"
