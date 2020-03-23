@@ -1,0 +1,376 @@
+Script started on 2020-02-23 14:00:27+0500
+]0;ender@ender-G5-5590: ~/stands-03-lvm/4.Make btrfs[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/4.Make btrfs[00m$ vagrant ssh
+Last login: Sun Feb 23 06:10:53 2020 from 10.0.2.2
+]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ lsblk
+NAME                        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                           8:0    0   40G  0 disk 
+├─sda1                        8:1    0    1M  0 part 
+├─sda2                        8:2    0    1G  0 part /boot
+└─sda3                        8:3    0   39G  0 part 
+  ├─VolGroup00-LogVol00     253:0    0    8G  0 lvm  /
+  ├─VolGroup00-LogVol01     253:1    0  1.5G  0 lvm  [SWAP]
+  └─VolGroup00-LogVol02     253:2    0   10G  0 lvm  /home
+sdb                           8:16   0   10G  0 disk 
+sdc                           8:32   0    2G  0 disk 
+sdd                           8:48   0    1G  0 disk 
+├─VolGroup01-LvVar_rmeta_0  253:3    0    4M  0 lvm  
+│ └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+└─VolGroup01-LvVar_rimage_0 253:4    0 1016M  0 lvm  
+  └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+sde                           8:64   0    1G  0 disk 
+├─VolGroup01-LvVar_rmeta_1  253:5    0    4M  0 lvm  
+│ └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+└─VolGroup01-LvVar_rimage_1 253:6    0 1016M  0 lvm  
+  └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+]0;vagrant@lvm:~[vagrant@lvm ~]$ pgcreate[K[K[K[K[K[K[Kvcreate /dev/sdb[K{b,c}
+  WARNING: Running as a non-root user. Functionality may be unavailable.
+  /run/lvm/lvmetad.socket: access failed: Permission denied
+  WARNING: Failed to connect to lvmetad. Falling back to device scanning.
+  /run/lock/lvm/P_orphans:aux: open failed: Permission denied
+  Can't get lock for orphan PVs.
+]0;vagrant@lvm:~[vagrant@lvm ~]$ sudo -s
+]0;root@lvm:/home/vagrant[?1034h[root@lvm vagrant]# pvcreate /dev/{[Ksb[Kd{b,c}
+  Physical volume "/dev/sdb" successfully created.
+  Physical volume "/dev/sdc" successfully created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgcreate VgBtre[Kfs /dev{s[K[K/sdb /sd[K[Kdev/sdc
+  Volume group "VgBtrfs" successfully created
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgdisplay VgBtrfs 
+  --- Volume group ---
+  VG Name               VgBtrfs
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               11.99 GiB
+  PE Size               4.00 MiB
+  Total PE              3070
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       3070 / 11.99 GiB
+  VG UUID               7zdTs3-tAt2-9Hf8-bZgh-ZPkU-jsmy-rLwh2h
+   
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# expr 3070/5 /5[C 5[C
+614
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VgBtrfs -l 614 -y -n LvBtrfs1
+  Wiping xfs signature on /dev/VgBtrfs/LvBtrfs1.
+  Logical volume "LvBtrfs1" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VgBtrfs -l 614 -y -n LvBtrfs1[K2
+  Logical volume "LvBtrfs2" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VgBtrfs -l 614 -y -n LvBtrfs2[K3
+  Logical volume "LvBtrfs3" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VgBtrfs -l 614 -y -n LvBtrfs3[K4
+  Logical volume "LvBtrfs4" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VgBtrfs -l 614 -y -n LvBtrfs4[K5
+  Logical volume "LvBtrfs5" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkfs.btrfs /dev/VgBtrfs/LvBtrfs*
+btrfs-progs v4.9.1
+See http://btrfs.wiki.kernel.org for more information.
+
+Label:              (null)
+UUID:               1626dc2b-2f78-4092-a8d4-c765168ac289
+Node size:          16384
+Sector size:        4096
+Filesystem size:    11.99GiB
+Block group profiles:
+  Data:             RAID0             1.20GiB
+  Metadata:         RAID1             1.00GiB
+  System:           RAID1             8.00MiB
+SSD detected:       no
+Incompat features:  extref, skinny-metadata
+Number of devices:  5
+Devices:
+   ID        SIZE  PATH
+    1     2.40GiB  /dev/VgBtrfs/LvBtrfs1
+    2     2.40GiB  /dev/VgBtrfs/LvBtrfs2
+    3     2.40GiB  /dev/VgBtrfs/LvBtrfs3
+    4     2.40GiB  /dev/VgBtrfs/LvBtrfs4
+    5     2.40GiB  /dev/VgBtrfs/LvBtrfs5
+
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mi[Ku[Kount /dev/VgBtrfs/LvBtrfs1
+mount: can't find /dev/VgBtrfs/LvBtrfs1 in /etc/fstab
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/VgBtrfs/LvBtrfs1 /mnt
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# btrfs subvolume create /mnt/opt
+Create subvolume '/mnt/opt'
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vi /etc/fstab 
+[?1049h[?1h=[1;51r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[51;1H"/etc/fstab" 13L, 563C[2;1H#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00[25C/[7Cxfs     defaults[8C0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc[15C/boot   xfs     defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol01[25Cswap    swap    defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol02[25C/home   ext4    data=journal,noexec 1 0
+/dev/mapper/VolGroup01-LvVar[28C/var    xfs     noatime,noexec  1 0
+[94m~                                                                                                   [15;1H~                                                                                                   [16;1H~                                                                                                   [17;1H~                                                                                                   [18;1H~                                                                                                   [19;1H~                                                                                                   [20;1H~                                                                                                   [21;1H~                                                                                                   [22;1H~                                                                                                   [23;1H~                                                                                                   [24;1H~                                                                                                   [25;1H~                                                                                                   [26;1H~                                                                                                   [27;1H~                                                                                                   [28;1H~                                                                                                   [29;1H~                                                                                                   [30;1H~                                                                                                   [31;1H~                                                                                                   [32;1H~                                                                                                   [33;1H~                                                                                                   [34;1H~                                                                                                   [35;1H~                                                                                                   [36;1H~                                                                                                   [37;1H~                                                                                                   [38;1H~                                                                                                   [39;1H~                                                                                                   [40;1H~                                                                                                   [41;1H~                                                                                                   [42;1H~                                                                                                   [43;1H~                                                                                                   [44;1H~                                                                                                   [45;1H~                                                                                                   [46;1H~                                                                                                   [47;1H~                                                                                                   [48;1H~                                                                                                   [49;1H~                                                                                                   [50;1H~                                                                                                   [1;1H[?12l[?25h[?25l[m[51;1H[1m-- INSERT --[m[51;14H[K[1;1H[?12l[?25h
+
+
+
+
+
+
+
+
+
+
+/dev/mapper/VolGroup00-LogVol02 [8C[8C[8C/home   ext4    data=journal,noexec 1[?25l 0[12;95H[K[12;93H[?12l[?25h[?25l0 0[?12l[?25h[13;92H[?25l 0[13;91H[K[13;89H[?12l[?25h[?25l0 0[?12l[?25h 0[?25l[14;1H[K[14;1H[?12l[?25h[?25lU[?12l[?25h[?25lU[?12l[?25h[?25lI[?12l[?25h[?25lD[?12l[?25h[?25l=[?12l[?25h[?25l1626dc2b-2f78-4092-a8d4-c765168ac289[?12l[?25h[?25l[7C[?12l[?25h[?25l[8C[?12l[?25h[?25l.[?12l[?25h[?25l[14;57H[K[14;57H[?12l[?25h[?25l/[?12l[?25h[?25lo[?12l[?25h[?25lp[?12l[?25h[?25lt[?12l[?25h[?25l    [?12l[?25h[?25lb[?12l[?25h[?25lt[?12l[?25h[?25lr[?12l[?25h[?25lf[?12l[?25h[?25ls[?12l[?25h[?25l   [?12l[?25h[?25ls[?12l[?25h[?25lu[?12l[?25h[?25lb[?12l[?25h[?25lv[?12l[?25h[?25lo[?12l[?25h[?25ll[?12l[?25h[?25l=[?12l[?25h[?25lo[?12l[?25h[?25lp[?12l[?25h[?25lt[?12l[?25h[?25l      [?12l[?25h[?25l0[?12l[?25h[?25l [?12l[?25h[?25l0[?12l[?25h[51;1H[K[14;91H[?25l[?12l[?25h[?25l[51;1H:[?12l[?25hwq[?25l"/etc/fstab" 14L, 632C written
+[?1l>[?12l[?25h[?1049l]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount -a
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount | grep opt
+/dev/mapper/VgBtrfs-LvBtrfs1 on /[01;31m[Kopt[m[K type btrfs (rw,relatime,seclabel,space_cache,subvolid=258,subvol=/[01;31m[Kopt[m[K)
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# cd /opt
+]0;root@lvm:/opt[root@lvm opt]# dd if=/dev/urandom of=file bs=1M count [C1024 [1P[1@-[1P[1@=[C[C[C[C[Ciflag [K=fullv[Kblock status=progress
+62914560 bytes (63 MB) copied, 1.048442 s, 60.0 MB/s90177536 bytes (90 MB) copied, 2.143642 s, 42.1 MB/s123731968 bytes (124 MB) copied, 3.180378 s, 38.9 MB/s160432128 bytes (160 MB) copied, 4.198067 s, 38.2 MB/s189792256 bytes (190 MB) copied, 5.477926 s, 34.6 MB/s222298112 bytes (222 MB) copied, 6.483609 s, 34.3 MB/s247463936 bytes (247 MB) copied, 7.491035 s, 33.0 MB/s287309824 bytes (287 MB) copied, 8.559700 s, 33.6 MB/s319815680 bytes (320 MB) copied, 9.565386 s, 33.4 MB/s350224384 bytes (350 MB) copied, 10.572079 s, 33.1 MB/s377487360 bytes (377 MB) copied, 11.579549 s, 32.6 MB/s411041792 bytes (411 MB) copied, 12.735769 s, 32.3 MB/s447741952 bytes (448 MB) copied, 13.744157 s, 32.6 MB/s477102080 bytes (477 MB) copied, 14.754651 s, 32.3 MB/s510656512 bytes (511 MB) copied, 15.775103 s, 32.4 MB/s537919488 bytes (538 MB) copied, 16.817845 s, 32.0 MB/s570425344 bytes (570 MB) copied, 17.852691 s, 32.0 MB/s595591168 bytes (596 MB) copied, 18.867343 s, 31.6 MB/s632291328 bytes (632 MB) copied, 19.892444 s, 31.8 MB/s661651456 bytes (662 MB) copied, 20.903549 s, 31.7 MB/s707788800 bytes (708 MB) copied, 21.928455 s, 32.3 MB/s752877568 bytes (753 MB) copied, 22.948888 s, 32.8 MB/s808452096 bytes (808 MB) copied, 23.959518 s, 33.7 MB/s852492288 bytes (852 MB) copied, 24.975554 s, 34.1 MB/s896532480 bytes (897 MB) copied, 25.979944 s, 34.5 MB/s948961280 bytes (949 MB) copied, 27.000270 s, 35.1 MB/s1004535808 bytes (1.0 GB) copied, 28.029518 s, 35.8 MB/s1061158912 bytes (1.1 GB) copied, 29.036800 s, 36.5 MB/s
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 29.2998 s, 36.6 MB/s
+]0;root@lvm:/opt[root@lvm opt]# md5sum file > file.md5
+]0;root@lvm:/opt[root@lvm opt]# md5sum -c file.md5 
+file: OK
+]0;root@lvm:/opt[root@lvm opt]# reboot
+Connection to 127.0.0.1 closed by remote host.
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/stands-03-lvm/4.Make btrfs[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/4.Make btrfs[00m$ vagrant ssh
+Last login: Sun Feb 23 06:11:43 2020 from 10.0.2.2
+]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ sudo -s
+]0;root@lvm:/home/vagrant[?1034h[root@lvm vagrant]# mount [K [K[K[K[K[K[Kdf -h
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/VolGroup00-LogVol00  8.0G  628M  7.4G   8% /
+devtmpfs                         110M     0  110M   0% /dev
+tmpfs                            118M     0  118M   0% /dev/shm
+tmpfs                            118M  4.6M  114M   4% /run
+tmpfs                            118M     0  118M   0% /sys/fs/cgroup
+/dev/mapper/VolGroup00-LogVol02  9.8G   37M  9.2G   1% /home
+/dev/sda2                       1014M   61M  954M   6% /boot
+/dev/mapper/VgBtrfs-LvBtrfs1      12G  1.1G  9.0G  11% /opt
+/dev/mapper/VolGroup01-LvVar    1013M  165M  849M  17% /var
+tmpfs                             24M     0   24M   0% /run/user/1000
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/VgBtrfs/LvBtrfs/[K /mnt
+mount: special device /dev/VgBtrfs/LvBtrfs does not exist
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/VgBtrfs/LvBtrfs /mnt1 /mnt
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# btrfs subvolume snapshot /mnt/opt [C/mnt/opt-snap[1@-[1@t[1P[1@r[1@ [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+Create a readonly snapshot of '/mnt/opt' in '/mnt/opt-snap'
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# cd /opt
+]0;root@lvm:/opt[root@lvm opt]# cd /optbtrfs subvolume snapshot -r /mnt/opt /mnt/opt-snap[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[18Pmount /dev/VgBtrfs/LvBtrfs1 /mnt[1P /mnt[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cdf -h[Krebootmd5sum -c file.md5 file > file.md5[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cdd if=/dev/urandom of=file bs=1M count=1024 iflag=fullblock status=progress
+60817408 bytes (61 MB) copied, 1.001917 s, 60.7 MB/s103809024 bytes (104 MB) copied, 2.010982 s, 51.6 MB/s152043520 bytes (152 MB) copied, 3.058034 s, 49.7 MB/s203423744 bytes (203 MB) copied, 4.060103 s, 50.1 MB/s257949696 bytes (258 MB) copied, 5.073027 s, 50.8 MB/s316669952 bytes (317 MB) copied, 6.074080 s, 52.1 MB/s364904448 bytes (365 MB) copied, 7.177139 s, 50.8 MB/s423624704 bytes (424 MB) copied, 8.214390 s, 51.6 MB/s469762048 bytes (470 MB) copied, 9.233957 s, 50.9 MB/s527433728 bytes (527 MB) copied, 10.282829 s, 51.3 MB/s564133888 bytes (564 MB) copied, 11.323928 s, 49.8 MB/s593494016 bytes (593 MB) copied, 12.340939 s, 48.1 MB/s629145600 bytes (629 MB) copied, 13.420936 s, 46.9 MB/s664797184 bytes (665 MB) copied, 14.441936 s, 46.0 MB/s691011584 bytes (691 MB) copied, 15.447960 s, 44.7 MB/s720371712 bytes (720 MB) copied, 16.453030 s, 43.8 MB/s756023296 bytes (756 MB) copied, 17.483944 s, 43.2 MB/s789577728 bytes (790 MB) copied, 18.498962 s, 42.7 MB/s825229312 bytes (825 MB) copied, 19.610956 s, 42.1 MB/s860880896 bytes (861 MB) copied, 20.696012 s, 41.6 MB/s894435328 bytes (894 MB) copied, 21.697018 s, 41.2 MB/s922746880 bytes (923 MB) copied, 22.746908 s, 40.6 MB/s951058432 bytes (951 MB) copied, 23.803925 s, 40.0 MB/s979369984 bytes (979 MB) copied, 24.808026 s, 39.5 MB/s1017118720 bytes (1.0 GB) copied, 25.826991 s, 39.4 MB/s1033895936 bytes (1.0 GB) copied, 26.833056 s, 38.5 MB/s1065353216 bytes (1.1 GB) copied, 27.842945 s, 38.3 MB/s
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 27.9605 s, 38.4 MB/s
+]0;root@lvm:/opt[root@lvm opt]# dd if=/dev/urandom of=file bs=1M count=1024 iflag=fullblock status=progress[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccd /opt[Kbtrfs subvolume snapshot -r /mnt/opt /mnt/opt-snap[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[18Pmount /dev/VgBtrfs/LvBtrfs1 /mnt[1P /mnt[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cdf -h[Krebootmd5sum -c file.md5 
+file: FAILED
+md5sum: WARNING: 1 computed checksum did NOT match
+]0;root@lvm:/opt[root@lvm opt]# cd ..
+]0;root@lvm:/[root@lvm /]# umount .[K/opt
+]0;root@lvm:/[root@lvm /]# btrfs /[Ksnapshot delete /mnt/opt
+btrfs: unknown token 'snapshot'
+usage: btrfs [--help] [--version] <group> [<group>...] <command> [<args>]
+
+    btrfs subvolume create [-i <qgroupid>] [<dest>/]<name>
+        Create a subvolume
+    btrfs subvolume delete [options] <subvolume> [<subvolume>...]
+        Delete subvolume(s)
+    btrfs subvolume list [options] [-G [+|-]value] [-C [+|-]value] [--sort=gen,ogen,rootid,path] <path>
+        List subvolumes (and snapshots)
+    btrfs subvolume snapshot [-r] [-i <qgroupid>] <source> <dest>|[<dest>/]<name>
+        Create a snapshot of the subvolume
+    btrfs subvolume get-default <path>
+        Get the default subvolume of a filesystem
+    btrfs subvolume set-default <subvolid> <path>
+        Set the default subvolume of a filesystem
+    btrfs subvolume find-new <path> <lastgen>
+        List the recently modified files in a filesystem
+    btrfs subvolume show <subvol-path>
+        Show more information of the subvolume
+    btrfs subvolume sync <path> [<subvol-id>...]
+        Wait until given subvolume(s) are completely removed from the filesystem.
+
+    btrfs filesystem df [options] <path>
+        Show space usage information for a mount point
+    btrfs filesystem du [options] <path> [<path>..]
+        Summarize disk usage of each file.
+    btrfs filesystem show [options] [<path>|<uuid>|<device>|label]
+        Show the structure of a filesystem
+    btrfs filesystem sync <path>
+        Force a sync on a filesystem
+    btrfs filesystem defragment [options] <file>|<dir> [<file>|<dir>...]
+        Defragment a file or a directory
+    btrfs filesystem resize [devid:][+/-]<newsize>[kKmMgGtTpPeE]|[devid:]max <path>
+        Resize a filesystem
+    btrfs filesystem label [<device>|<mount_point>] [<newlabel>]
+        Get or change the label of a filesystem
+    btrfs filesystem usage [options] <path> [<path>..]
+        Show detailed information about internal filesystem usage .
+
+    btrfs balance start [options] <path>
+        Balance chunks across the devices
+    btrfs balance pause <path>
+        Pause running balance
+    btrfs balance cancel <path>
+        Cancel running or paused balance
+    btrfs balance resume <path>
+        Resume interrupted balance
+    btrfs balance status [-v] <path>
+        Show status of running or paused balance
+
+    btrfs device add [options] <device> [<device>...] <path>
+        Add a device to a filesystem
+    btrfs device delete <device>|<devid> [<device>|<devid>...] <path>
+    btrfs device remove <device>|<devid> [<device>|<devid>...] <path>
+        Remove a device from a filesystem
+    btrfs device scan [(-d|--all-devices)|<device> [<device>...]]
+        Scan devices for a btrfs filesystem
+    btrfs device ready <device>
+        Check device to see if it has all of its devices in cache for mounting
+    btrfs device stats [options] <path>|<device>
+        Show device IO error statistics
+    btrfs device usage [options] <path> [<path>..]
+        Show detailed information about internal allocations in devices.
+
+    btrfs scrub start [-BdqrRf] [-c ioprio_class -n ioprio_classdata] <path>|<device>
+        Start a new scrub. If a scrub is already running, the new one fails.
+    btrfs scrub cancel <path>|<device>
+        Cancel a running scrub
+    btrfs scrub resume [-BdqrR] [-c ioprio_class -n ioprio_classdata] <path>|<device>
+        Resume previously canceled or interrupted scrub
+    btrfs scrub status [-dR] <path>|<device>
+        Show status of running or finished scrub
+
+    btrfs check [options] <device>
+        Check structural integrity of a filesystem (unmounted).
+
+    btrfs rescue chunk-recover [options] <device>
+        Recover the chunk tree by scanning the devices one by one.
+    btrfs rescue super-recover [options] <device>
+        Recover bad superblocks from good copies
+    btrfs rescue zero-log <device>
+        Clear the tree log. Usable if it's corrupted and prevents mount.
+
+    btrfs restore [options] <device> <path> | -l <device>
+        Try to restore files from a damaged filesystem (unmounted)
+
+    btrfs inspect-internal inode-resolve [-v] <inode> <path>
+        Get file system paths for the given inode
+    btrfs inspect-internal logical-resolve [-Pv] [-s bufsize] <logical> <path>
+        Get file system paths for the given logical address
+    btrfs inspect-internal subvolid-resolve <subvolid> <path>
+        Get file system paths for the given subvolume ID.
+    btrfs inspect-internal rootid <path>
+        Get tree ID of the containing subvolume of path.
+    btrfs inspect-internal min-dev-size [options] <path>
+        Get the minimum size the device can be shrunk to. The
+    btrfs inspect-internal dump-tree [options] device
+        Dump tree structures from a given device
+    btrfs inspect-internal dump-super [options] device [device...]
+        Dump superblock from a device in a textual form
+    btrfs inspect-internal tree-stats [options] <device>
+        Print various stats for trees
+
+    btrfs property get [-t <type>] <object> [<name>]
+        Gets a property from a btrfs object.
+    btrfs property set [-t <type>] <object> <name> <value>
+        Sets a property on a btrfs object.
+    btrfs property list [-t <type>] <object>
+        Lists available properties with their descriptions for the given object.
+
+    btrfs send [-ve] [-p <parent>] [-c <clone-src>] [-f <outfile>] <subvol> [<subvol>...]
+        Send the subvolume(s) to stdout.
+    btrfs receive [options] <mount>
+btrfs receive --dump [options]
+        Receive subvolumes from a stream
+
+    btrfs quota enable <path>
+        Enable subvolume quota support for a filesystem.
+    btrfs quota disable <path>
+        Disable subvolume quota support for a filesystem.
+    btrfs quota rescan [-sw] <path>
+        Trash all qgroup numbers and scan the metadata again with the current config.
+
+    btrfs qgroup assign [options] <src> <dst> <path>
+        Assign SRC as the child qgroup of DST
+    btrfs qgroup remove <src> <dst> <path>
+        Remove a child qgroup SRC from DST.
+    btrfs qgroup create <qgroupid> <path>
+        Create a subvolume quota group.
+    btrfs qgroup destroy <qgroupid> <path>
+        Destroy a quota group.
+    btrfs qgroup show [options] <path>
+        Show subvolume quota groups.
+    btrfs qgroup limit [options] <size>|none [<qgroupid>] <path>
+        Set the limits a subvolume quota group.
+
+    btrfs replace start [-Bfr] <srcdev>|<devid> <targetdev> <mount_point>
+        Replace device of a btrfs filesystem.
+    btrfs replace status [-1] <mount_point>
+        Print status and progress information of a running device replace
+    btrfs replace cancel <mount_point>
+        Cancel a running device replace operation.
+
+    btrfs help [--full]
+        Display help information
+    btrfs version
+        Display btrfs-progs version
+
+Use --help as an argument for information on a specific group or command.
+]0;root@lvm:/[root@lvm /]# btrfs snapshot delete /mnt/opt[C[1P[1P[1P[1P[1P[1P[1P[1P[1@s[1@u[1@b[1@v[1@o[1@l[1@u[1@m[1@e
+Delete subvolume (no-commit): '/mnt/opt'
+]0;root@lvm:/[root@lvm /]# btrfs subvolume delete /mnt/opt[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Ksnapshor [K[Kt /mnt/opt-snap/[K /mnt/opt
+Create a snapshot of '/mnt/opt-snap' in '/mnt/opt'
+]0;root@lvm:/[root@lvm /]# btrfs proc/[K[Kperty get /mnt/s[Kopt ro
+ro=false
+]0;root@lvm:/[root@lvm /]# btrfs property get /mnt/opt ro- ros ron roa rop ro
+ro=true
+]0;root@lvm:/[root@lvm /]# btrfs property get /mnt/opt-snap ro[5P ro[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Csubvolume snapshot /mnt/opt-snap /mnt/opt[16Pdelete[C[C[C[C[C[C[C[C[C-snap
+Delete subvolume (no-commit): '/mnt/opt-snap'
+]0;root@lvm:/[root@lvm /]# mount /a[K[K/opt
+]0;root@lvm:/[root@lvm /]# cd /opt
+]0;root@lvm:/opt[root@lvm opt]# cd /opt[3@mount[C[C[C[C[Cbtrfs subvolume delete /mnt/opt-snap[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1Pproperty get /mnt/opt-snap ro[5P ro[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Csubvolume snapshot /mnt/opt-snap /mnt/opt[16Pdelete[C[C[C[C[C[C[C[C[C[1Pnapshot[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[19Pumount /opt[6Pcd ..md5sum -c file.md5 
+file: OK
+]0;root@lvm:/opt[root@lvm opt]# umount /mnt
+]0;root@lvm:/opt[root@lvm opt]# lsblk -f
+NAME                        FSTYPE      LABEL UUID                                   MOUNTPOINT
+sda                                                                                  
+├─sda1                                                                               
+├─sda2                      xfs               570897ca-e759-4c81-90cf-389da6eee4cc   /boot
+└─sda3                      LVM2_member       vrrtbx-g480-HcJI-5wLn-4aOf-Olld-rC03AY 
+  ├─VolGroup00-LogVol00     xfs               3bf0eeea-af04-4924-8fcd-9f30145e9e8c   /
+  ├─VolGroup00-LogVol01     swap              c39c5bed-f37c-4263-bee8-aeb6a6659d7b   [SWAP]
+  └─VolGroup00-LogVol02     ext4              2ae7fe27-945d-487b-9fe1-bdc8020e016a   /home
+sdb                         LVM2_member       DdPyob-B3t0-BuTe-F6Kp-jizq-BxDy-8uC2EN 
+├─VgBtrfs-LvBtrfs1          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   /opt
+├─VgBtrfs-LvBtrfs2          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   
+├─VgBtrfs-LvBtrfs3          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   
+├─VgBtrfs-LvBtrfs4          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   
+└─VgBtrfs-LvBtrfs5          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   
+sdc                         LVM2_member       I5c6Qy-KIjf-K1N0-Jdv9-SQ2K-miYc-tL2kHj 
+└─VgBtrfs-LvBtrfs5          btrfs             1626dc2b-2f78-4092-a8d4-c765168ac289   
+sdd                         LVM2_member       XAmswM-hONg-WoUk-1CnD-eXqB-GOmE-1K8jji 
+├─VolGroup01-LvVar_rmeta_0                                                           
+│ └─VolGroup01-LvVar        xfs               52aaa35e-68d6-4ba8-8f4a-6d122e97cd64   /var
+└─VolGroup01-LvVar_rimage_0                                                          
+  └─VolGroup01-LvVar        xfs               52aaa35e-68d6-4ba8-8f4a-6d122e97cd64   /var
+sde                         LVM2_member       fn1oQ4-n2mS-TZRT-hA0h-fvcA-bkYL-KJf8N2 
+├─VolGroup01-LvVar_rmeta_1                                                           
+│ └─VolGroup01-LvVar        xfs               52aaa35e-68d6-4ba8-8f4a-6d122e97cd64   /var
+└─VolGroup01-LvVar_rimage_1                                                          
+  └─VolGroup01-LvVar        xfs               52aaa35e-68d6-4ba8-8f4a-6d122e97cd64   /var
+]0;root@lvm:/opt[root@lvm opt]# reboot
+Connection to 127.0.0.1 closed by remote host.
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/stands-03-lvm/4.Make btrfs[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/4.Make btrfs[00m$ vagrant ssh
+Last login: Sun Feb 23 09:07:54 2020 from 10.0.2.2
+]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ cd /opt/
+]0;vagrant@lvm:/opt[vagrant@lvm opt]$ cd /opt/[1Psudo -spvcreate /dev/sd{b,c}[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Clsblk[Kmount | grep varlsblk[Ksudo -spvcreate /dev/sdd /dev/sde[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kmd5sum -c file.md5 
+file: OK
+]0;vagrant@lvm:/opt[vagrant@lvm opt]$ logout
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/stands-03-lvm/4.Make btrfs[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/4.Make btrfs[00m$ exit
+
+Script done on 2020-02-23 14:14:27+0500

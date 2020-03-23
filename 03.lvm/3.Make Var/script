@@ -1,0 +1,156 @@
+Script started on 2020-02-23 10:59:56+0500
+]0;ender@ender-G5-5590: ~/stands-03-lvm/3.Make Var[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/3.Make Var[00m$ vagrant ssh
+Last login: Sun Feb 23 05:56:26 2020 from 10.0.2.2
+]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+├─sda1                    8:1    0    1M  0 part 
+├─sda2                    8:2    0    1G  0 part /boot
+└─sda3                    8:3    0   39G  0 part 
+  ├─VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  ├─VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+  └─VolGroup00-LogVol02 253:2    0   10G  0 lvm  /home
+sdb                       8:16   0   10G  0 disk 
+sdc                       8:32   0    2G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+sde                       8:64   0    1G  0 disk 
+]0;vagrant@lvm:~[vagrant@lvm ~]$ pvcreate /dev/sdb[Kd /dev/sde
+  WARNING: Running as a non-root user. Functionality may be unavailable.
+  /run/lvm/lvmetad.socket: access failed: Permission denied
+  WARNING: Failed to connect to lvmetad. Falling back to device scanning.
+  /run/lock/lvm/P_orphans:aux: open failed: Permission denied
+  Can't get lock for orphan PVs.
+]0;vagrant@lvm:~[vagrant@lvm ~]$ sudo --[Ks
+]0;root@lvm:/home/vagrant[?1034h[root@lvm vagrant]# pc[Kvcreate /dev/sda3 [K[K[Ke[Kd /dev/sda3 [K[K[Kc[Ke
+  Physical volume "/dev/sdd" successfully created.
+  Physical volume "/dev/sde" successfully created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/sda3  VolGroup00 lvm2 a--  <38.97g <19.47g
+  /dev/sdd              lvm2 ---    1.00g   1.00g
+  /dev/sde              lvm2 ---    1.00g   1.00g
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vg_creat[K[K[K[K[K[Kcreate VolGroup01 /dev/sde[Kd/ d[K[K[K /dev/sda3 [K[K[Ke
+  Volume group "VolGroup01" successfully created
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgcreate VolGroup01 /dev/sdd /dev/sde[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cpvs[K
+  PV         VG         Fmt  Attr PSize    PFree   
+  /dev/sda3  VolGroup00 lvm2 a--   <38.97g  <19.47g
+  /dev/sdd   VolGroup01 lvm2 a--  1020.00m 1020.00m
+  /dev/sde   VolGroup01 lvm2 a--  1020.00m 1020.00m
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lv[K[Kvgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  VolGroup00   1   3   0 wz--n- <38.97g <19.47g
+  VolGroup01   2   0   0 wz--n-   1.99g   1.99g
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate VolGroup01 -n LvVar -l 100%FREE -m1
+  Logical volume "LvVar" created.
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  VolGroup00   1   3   0 wz--n- <38.97g <19.47g
+  VolGroup01   2   1   0 wz--n-   1.99g      0 
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# lv[K[Kp[Klvs
+  LV       VG         Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao----    8.00g                                                    
+  LogVol01 VolGroup00 -wi-ao----    1.50g                                                    
+  LogVol02 VolGroup00 -wi-ao----   10.00g                                                    
+  LvVar    VolGroup01 rwi-a-r--- 1016.00m                                    100.00          
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# [K[root@lvm vagrant]# mkx[Kfs.xfs /dev/VolGroup01/LvVar [K
+meta-data=/dev/VolGroup01/LvVar  isize=512    agcount=4, agsize=65024 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=260096, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/VolGroup01/LvVar /mnt
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# cp -aR /var/* /mnt/
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# umount /,m[K[K,[Kmnt/
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# rm -rf /m[Kvar/*
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/gssd/clntXX/gssd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/gssd/clntXX/info’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfsd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/cache’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfsd4_cb’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/statd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/portmap’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfs’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/mount’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/lockd’: Operation not permitted
+rm: cannot remove ‘/var/tmp’: Device or resource busy
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# rm -rf /var/*
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/gssd/clntXX/gssd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/gssd/clntXX/info’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfsd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/cache’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfsd4_cb’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/statd’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/portmap’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/nfs’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/mount’: Operation not permitted
+rm: cannot remove ‘/var/lib/nfs/rpc_pipefs/lockd’: Operation not permitted
+rm: cannot remove ‘/var/tmp’: Device or resource busy
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/VolGroup01/LvVar /var
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount | grep vae[Kr
+sunrpc on /[01;31m[Kvar[m[K/lib/nfs/rpc_pipefs type rpc_pipefs (rw,relatime)
+/dev/mapper/VolGroup01-LvVar on /[01;31m[Kvar[m[K type xfs (rw,relatime,seclabel,attr2,inode64,noquota)
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount -[K[K[K[K[K[K[Kvi /etc/fstab 
+[?1049h[?1h=[1;24r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[24;1H"/etc/fstab" 12L, 503C[2;1H#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00[25C/[7Cxfs     defaults[8C0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc[15C/boot   xfs     defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol01[25Cswap    swap    defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol02[25C/home   ext4    data=journal,noexec 1 0
+[94m~                                                                                                     [14;1H~                                                                                                     [15;1H~                                                                                                     [16;1H~                                                                                                     [17;1H~                                                                                                     [18;1H~                                                                                                     [19;1H~                                                                                                     [20;1H~                                                                                                     [21;1H~                                                                                                     [22;1H~                                                                                                     [23;1H~                                                                                                     [1;1H[?12l[?25h[?25l[m[24;1H[1m-- INSERT --[m[24;14H[K[1;1H[?12l[?25h
+
+
+
+
+
+
+
+
+
+
+/dev/mapper/VolGroup00-LogVol02 [8C[8C[8C/home   ext4    data=journal,noexec 1 0[?25l[13;1H[K[13;1H[?12l[?25h[?25l.[?12l[?25h[?25l[13;1H[K[13;1H[?12l[?25h[?25l/[?12l[?25h[?25le[?12l[?25h[?25l[13;2H[K[13;2H[?12l[?25h[?25ld[?12l[?25h[?25le[?12l[?25h[?25lv[?12l[?25h[?25l/[?12l[?25h[?25lm[?12l[?25h[?25la[?12l[?25h[?25l [?12l[?25h[?25l[?12l[?25h[?25lp[?12l[?25h[?25lp[?12l[?25h[?25le[?12l[?25h[?25lr[?12l[?25h[?25l/[?12l[?25h[?25lV[?12l[?25h[?25lo[?12l[?25h[?25ll[?12l[?25h[?25lG[?12l[?25h[?25lr[?12l[?25h[?25lo[?12l[?25h[?25lu[?12l[?25h[?25lp[?12l[?25h[?25l0[?12l[?25h[?25l1[?12l[?25h[?25l-[?12l[?25h[?25lL[?12l[?25h[?25l[13;24H[K[13;24H[?12l[?25h[?25lL[?12l[?25h[?25lv[?12l[?25h[?25l[13;25H[K[13;25H[?12l[?25h[?25lv[?12l[?25h[?25lV[?12l[?25h[?25la[?12l[?25h[?25lr[?12l[?25h[?25l    [?12l[?25h[?25l[8C[?12l[?25h[?25l[8C[?12l[?25h[?25l[8C[?12l[?25h[?25l/[?12l[?25h[?25lv[?12l[?25h[?25la[?12l[?25h[?25lr[?12l[?25h[?25l    [?12l[?25h[?25lx[?12l[?25h[?25lf[?12l[?25h[?25ls[?12l[?25h[?25l     [?12l[?25h[?25ln[?12l[?25h[?25lo[?12l[?25h[?25la[?12l[?25h[?25lt[?12l[?25h[?25li[?12l[?25h[?25lm[?12l[?25h[?25le[?12l[?25h[?25l,[?12l[?25h[?25ln[?12l[?25h[?25lo[?12l[?25h[?25le[?12l[?25h[?25lx[?12l[?25h[?25le[?12l[?25h[?25lc[?12l[?25h[?25l [?12l[?25h[?25l [?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l  [?12l[?25h[?25l0[?12l[?25h[?25l[13;89H[K[13;89H[?12l[?25h[?25l1[?12l[?25h[?25l[7C[?12l[?25h[?25l[13;90H[?12l[?25h[?25l [?12l[?25h[?25l0[?12l[?25h[24;1H[K[13;91H[?25l[?12l[?25h[?25l[24;1H:[?12l[?25hwq[?25l"/etc/fstab" 13L, 563C written
+[?1l>[?12l[?25h[?1049l]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount 0a[K[K0[K0a[K[K-a
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# reboor
+bash: reboor: command not found
+]0;root@lvm:/home/vagrant[root@lvm vagrant]# reboor[Kt
+Connection to 127.0.0.1 closed by remote host.
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/stands-03-lvm/3.Make Var[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/3.Make Var[00m$ vagrant ssh
+Last login: Sun Feb 23 06:00:05 2020 from 10.0.2.2
+]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ lsblk
+NAME                        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                           8:0    0   40G  0 disk 
+├─sda1                        8:1    0    1M  0 part 
+├─sda2                        8:2    0    1G  0 part /boot
+└─sda3                        8:3    0   39G  0 part 
+  ├─VolGroup00-LogVol00     253:0    0    8G  0 lvm  /
+  ├─VolGroup00-LogVol01     253:1    0  1.5G  0 lvm  [SWAP]
+  └─VolGroup00-LogVol02     253:2    0   10G  0 lvm  /home
+sdb                           8:16   0   10G  0 disk 
+sdc                           8:32   0    2G  0 disk 
+sdd                           8:48   0    1G  0 disk 
+├─VolGroup01-LvVar_rmeta_0  253:3    0    4M  0 lvm  
+│ └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+└─VolGroup01-LvVar_rimage_0 253:4    0 1016M  0 lvm  
+  └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+sde                           8:64   0    1G  0 disk 
+├─VolGroup01-LvVar_rmeta_1  253:5    0    4M  0 lvm  
+│ └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+└─VolGroup01-LvVar_rimage_1 253:6    0 1016M  0 lvm  
+  └─VolGroup01-LvVar        253:7    0 1016M  0 lvm  /var
+]0;vagrant@lvm:~[vagrant@lvm ~]$ mount | gr[Ke[Krep var
+/dev/mapper/VolGroup01-LvVar on /[01;31m[Kvar[m[K type xfs (rw,noexec,noatime,seclabel,attr2,inode64,noquota)
+sunrpc on /[01;31m[Kvar[m[K/lib/nfs/rpc_pipefs type rpc_pipefs (rw,relatime)
+]0;vagrant@lvm:~[vagrant@lvm ~]$ logout
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/stands-03-lvm/3.Make Var[01;32mender@ender-G5-5590[00m:[01;34m~/stands-03-lvm/3.Make Var[00m$ exit
+
+Script done on 2020-02-23 11:08:29+0500
