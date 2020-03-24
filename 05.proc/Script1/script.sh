@@ -67,7 +67,9 @@ for pid in `ls -1 /proc/ | egrep '^[0-9]+$' | sort -h`; do
 
 		printf '%5d %-8s %-6s %d:%02d ' $pid $tty $status $min $sec
 		#cmdline
-		cmdline=`head -c 100 /proc/$pid/cmdline  | tr '\0' ' '`
+		cols=`tput cols`
+		remain=$((cols - 27))
+		cmdline=`head -c $remain /proc/$pid/cmdline  | tr '\0' ' '`
 		if [[ -z $cmdline ]]; then
 			cmdline=`awk '{gsub("\(","[",$2);gsub("\)","]",$2);print $2}' /proc/$pid/stat`
 		fi
