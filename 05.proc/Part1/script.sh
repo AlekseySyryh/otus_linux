@@ -71,7 +71,7 @@ for pid in `ls -1 /proc/ | egrep '^[0-9]+$' | sort -h`; do
 		remain=$((cols - 27))
 		cmdline=`head -c $remain /proc/$pid/cmdline  | tr '\0' ' '`
 		if [[ -z $cmdline ]]; then
-			cmdline=`awk '{gsub("\(","[",$2);gsub("\)","]",$2);print $2}' /proc/$pid/stat`
+			cmdline=`awk '{gsub("\\\\(","[",$2);gsub("\\\\)","]",$2);print $2}' /proc/$pid/stat`
 		fi
 		echo $cmdline
 	fi
