@@ -3,10 +3,11 @@
 Скрипт после запуска начинает ждать SIGUSR1, после его получения - завершает работу.
 
 Пример использования
-	$ ./script3.sh &
-	[1] 18347
-	Ждем SIGUSR1
-	$ kill -SIGUSR1 %1
-	User defined signal 1
-	Дождались
-	[1]+  Done                    ./script3.sh
+
+    $ ./script3.sh &
+    [1] 18347
+    Ждем SIGUSR1
+    $ kill -SIGUSR1 %1
+    User defined signal 1
+    Дождались
+    [1]+  Done                    ./script3.sh

@@ -9,4 +9,5 @@
 Результат запуска в файле typescript
 
 Запуск
+
     sudo ./script.sh 
