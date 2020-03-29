@@ -1,0 +1,127 @@
+Script started on 2020-03-29 18:23:11+05:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="201" LINES="36"]
+]0;ender@ender-G5-5590: ~/otus_linux/06.boot/Part3[01;32mender@ender-G5-5590[00m:[01;34m~/otus_linux/06.boot/Part3[00m$ vagrant ssh
+]0;vagrant@localhost:~[?1034h[vagrant@localhost ~]$ sudo -s
+]0;root@localhost:/home/vagrant[?1034h[root@localhost vagrant]# cd /usr/lib/dracut/mi[Kodules.d/
+00bash/               05nss-softokn/        80cms/                90dmsquash-live/      90multipath-hostonly/ 95debug/              95virtfs/             98syslog/             99shutdown/
+00systemd-bootchart/  10i18n/               90bcache/             90dmsquash-live-ntfs/ 90qemu/               95fstab-sys/          95zfcp/               98systemd/            
+03modsign/            30convertfs/          90btrfs/              90kernel-modules/     91crypt-gpg/          95resume/             97biosdevname/        98usrmount/           
+03rescue/             45url-lib/            90crypt/              90lvm/                91crypt-loop/         95rootfs-block/       98ecryptfs/           99base/               
+04watchdog/           50drm/                90dm/                 90mdraid/             95dasd/               95terminfo/           98pollcdrom/          99fs-lib/             
+05busybox/            50plymouth/           90dmraid/             90multipath/          95dasd_mod/           95udev-rules/         98selinux/            99img-lib/            
+[root@localhost vagrant]# cd /usr/lib/dracut/modules.d/
+]0;root@localhost:/usr/lib/dracut/modules.d[root@localhost modules.d]# mkdir 01test
+]0;root@localhost:/usr/lib/dracut/modules.d[root@localhost modules.d]# cd 01test/
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# cp /vagrant/Part3/*.sh .
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# ls
+module-setup.sh  test.sh
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# chmod +x sh
+chmod: cannot access 'sh': No such file or directory
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# chmod +x sh*sh.sh
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# ls
+[0m[38;5;34mmodule-setup.sh[0m  [38;5;34mtest.sh[0m
+]0;root@localhost:/usr/lib/dracut/modules.d/01test[root@localhost 01test]# cd /
+]0;root@localhost:/[root@localhost /]# cat /pent[Kguin
+cat: /penguin: No such file or directory
+]0;root@localhost:/[root@localhost /]# dracut -fv
+Executing: /sbin/dracut -fv
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+*** Including module: bash ***
+*** Including module: test ***
+*** Including module: nss-softokn ***
+*** Including module: i18n ***
+*** Including module: drm ***
+*** Including module: plymouth ***
+*** Including module: dm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 60-persistent-storage-dm.rules
+Skipping udev rule: 55-dm.rules
+*** Including module: kernel-modules ***
+Omitting driver floppy
+*** Including module: lvm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 56-lvm.rules
+Skipping udev rule: 60-persistent-storage-lvm.rules
+*** Including module: qemu ***
+*** Including module: resume ***
+*** Including module: rootfs-block ***
+*** Including module: terminfo ***
+*** Including module: udev-rules ***
+Skipping udev rule: 40-redhat-cpu-hotplug.rules
+Skipping udev rule: 91-permissions.rules
+*** Including module: biosdevname ***
+*** Including module: systemd ***
+*** Including module: usrmount ***
+*** Including module: base ***
+*** Including module: fs-lib ***
+*** Including module: shutdown ***
+*** Including modules done ***
+*** Installing kernel module dependencies and firmware ***
+*** Installing kernel module dependencies and firmware done ***
+*** Resolving executable dependencies ***
+*** Resolving executable dependencies done***
+*** Hardlinking files ***
+*** Hardlinking files done ***
+*** Stripping files ***
+*** Stripping files done ***
+*** Generating early-microcode cpio image contents ***
+*** No early-microcode cpio image needed ***
+*** Store current command line parameters ***
+*** Creating image file ***
+*** Creating image file done ***
+*** Creating initramfs image file '/boot/initramfs-3.10.0-862.2.3.el7.x86_64.img' done ***
+]0;root@localhost:/[root@localhost /]# reboot
+Connection to 127.0.0.1 closed by remote host.
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/otus_linux/06.boot/Part3[01;32mender@ender-G5-5590[00m:[01;34m~/otus_linux/06.boot/Part3[00m$ vagrant ssh
+]0;ender@ender-G5-5590: ~/otus_linux/06.boot/Part3[01;32mender@ender-G5-5590[00m:[01;34m~/otus_linux/06.boot/Part3[00m$ cat /pen[K[K[K[K[K[K[K[Kvagrant ssh
+Last login: Sun Mar 29 13:23:18 2020 from 10.0.2.2
+]0;vagrant@localhost:~[?1034h[vagrant@localhost ~]$ cat /penguin 
+Hello! You are in dracut module!
+ ___________________
+< I'm dracut module >
+ -------------------
+   \
+    \
+        .--.
+       |o_o |
+       |:_/ |
+      //   \ \
+     (|     | )
+    /'\_   _/`\
+    \___)=(___/
+]0;vagrant@localhost:~[vagrant@localhost ~]$ rm /[K[K[K[Ksudo rm /penguin 
+]0;vagrant@localhost:~[vagrant@localhost ~]$ re[K[Ksudo reboot
+Connection to 127.0.0.1 closed by remote host.
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/otus_linux/06.boot/Part3[01;32mender@ender-G5-5590[00m:[01;34m~/otus_linux/06.boot/Part3[00m$ vagrant ssh
+Last login: Sun Mar 29 13:25:09 2020 from 10.0.2.2
+]0;vagrant@localhost:~[?1034h[vagrant@localhost ~]$ sudo rebootm /penguin [4Pcat[C[C[C[C[C[C[C[C[C[C
+Hello! You are in dracut module!
+ ___________________
+< I'm dracut module >
+ -------------------
+   \
+    \
+        .--.
+       |o_o |
+       |:_/ |
+      //   \ \
+     (|     | )
+    /'\_   _/`\
+    \___)=(___/
+]0;vagrant@localhost:~[vagrant@localhost ~]$ logout
+Connection to 127.0.0.1 closed.
+]0;ender@ender-G5-5590: ~/otus_linux/06.boot/Part3[01;32mender@ender-G5-5590[00m:[01;34m~/otus_linux/06.boot/Part3[00m$ exit
+
+Script done on 2020-03-29 18:26:04+05:00 [COMMAND_EXIT_CODE="0"]
